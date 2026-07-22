@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réservation — Évasion Bungalows, Sarraméa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --river-deep: #1F3A2E;
+    --river-mid: #2E5044;
+    --bark: #8B5E3C;
+    --sand: #F2ECDE;
+    --teal: #4A7C7C;
+    --hibiscus: #E0623F;
+    --ink: #22281F;
+    --line: rgba(34,40,31,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Public Sans', sans-serif;
+    color:var(--ink);
+    background:var(--sand);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:var(--river-deep);
+    color:var(--sand);
+    padding:64px 24px 96px;
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:760px;
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.16em;
+    font-size:12px;
+    font-weight:600;
+    color:#C9D9CB;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(32px, 6vw, 52px);
+    line-height:1.05;
+    max-width:14ch;
+  }
+  .hero p{
+    max-width:46ch;
+    margin-top:18px;
+    font-size:16px;
+    line-height:1.6;
+    color:#DCE6DD;
+  }
+  .river-line{
+    position:absolute;
+    bottom:-2px; left:0; right:0;
+    height:90px;
+    z-index:1;
+  }
+  .leaf-deco{
+    position:absolute;
+    opacity:0.5;
+  }
+
+  /* ---------- FORM SECTION ---------- */
+  .wrap{
+    max-width:760px;
+    margin:-56px auto 0;
+    padding:0 24px 80px;
+    position:relative;
+    z-index:3;
+  }
+  .card{
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 24px 60px -24px rgba(31,58,46,0.35);
+    padding:40px 32px;
+  }
+  @media (min-width:600px){
+    .card{padding:48px 56px;}
+  }
+  .card h2{
+    font-size:24px;
+    color:var(--river-deep);
+  }
+  .card > p.lead{
+    margin:10px 0 32px;
+    color:#555;
+    font-size:14.5px;
+    line-height:1.6;
+  }
+
+  fieldset{
+    border:none;
+    padding:0;
+    margin:0 0 28px;
+  }
+  legend{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--river-mid);
+    margin-bottom:14px;
+    padding:0;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+  @media (min-width:560px){
+    .grid.two{grid-template-columns:1fr 1fr;}
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  .req{color:var(--hibiscus); font-weight:600;}
+  input[type="text"], input[type="tel"], input[type="email"], textarea{
+    width:100%;
+    font-family:'Public Sans', sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FBFAF6;
+    color:var(--ink);
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  input:focus, textarea:focus{
+    outline:none;
+    border-color:var(--teal);
+    background:#fff;
+  }
+  input:focus-visible, textarea:focus-visible, .bungalow-option:focus-within{
+    outline:2px solid var(--teal);
+    outline-offset:2px;
+  }
+  textarea{resize:vertical; min-height:96px; line-height:1.5;}
+
+  /* Bungalow selector */
+  .bungalow-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  @media (min-width:560px){
+    .bungalow-grid{grid-template-columns:repeat(3,1fr);}
+  }
+  .bungalow-option{
+    position:relative;
+  }
+  .bungalow-option input{
+    position:absolute;
+    opacity:0;
+    width:1px; height:1px;
+  }
+  .bungalow-option label{
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:16px 14px;
+    background:#FBFAF6;
+    margin:0;
+    height:100%;
+    transition:border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  }
+  .bungalow-option input:checked + label{
+    border-color:var(--river-mid);
+    background:#EEF3EC;
+  }
+  .bungalow-option label:hover{
+    transform:translateY(-1px);
+  }
+  .b-icon{
+    width:26px; height:26px;
+    color:var(--teal);
+  }
+  .bungalow-option input:checked + label .b-icon{color:var(--river-deep);}
+  .b-name{
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .b-tag{
+    font-size:12px;
+    color:#7A7A70;
+    line-height:1.4;
+    font-weight:400;
+  }
+
+  .submit-row{
+    margin-top:8px;
+  }
+  button.submit{
+    width:100%;
+    background:var(--hibiscus);
+    color:#fff;
+    border:none;
+    font-family:'Public Sans', sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    padding:15px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:background 0.15s ease, transform 0.1s ease;
+  }
+  button.submit:hover{background:#C94F30;}
+  button.submit:active{transform:scale(0.99);}
+  button.submit:disabled{opacity:0.6; cursor:not-allowed;}
+
+  .fine-print{
+    margin-top:14px;
+    font-size:12.5px;
+    color:#8A8A7F;
+    text-align:center;
+    line-height:1.5;
+  }
+
+  #status-msg{
+    display:none;
+    margin-top:20px;
+    padding:16px 18px;
+    border-radius:12px;
+    font-size:14.5px;
+    line-height:1.5;
+  }
+  #status-msg.success{
+    display:block;
+    background:#E9F1EA;
+    color:var(--river-deep);
+    border:1px solid #C9DCC9;
+  }
+  #status-msg.error{
+    display:block;
+    background:#FBEAE6;
+    color:#8C3A24;
+    border:1px solid #F1C6BA;
+  }
+
+  footer{
+    text-align:center;
+    font-size:12.5px;
+    color:#9A9A8E;
+    padding:0 24px 40px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="river-line" viewBox="0 0 800 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,40 C120,70 220,10 340,35 C460,60 540,15 660,40 C720,52 760,45 800,35 L800,90 L0,90 Z" fill="var(--sand)"/>
+  </svg>
+  <svg class="leaf-deco" style="top:20px; right:6%; width:70px; height:70px;" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 C20 30 15 70 50 90 C85 70 80 30 50 10 Z" fill="none" stroke="#5A8770" stroke-width="2"/>
+    <line x1="50" y1="15" x2="50" y2="85" stroke="#5A8770" stroke-width="1.5"/>
+  </svg>
+  <svg class="leaf-deco" style="bottom:70px; left:8%; width:44px; height:44px;" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 C20 30 15 70 50 90 C85 70 80 30 50 10 Z" fill="none" stroke="#5A8770" stroke-width="2"/>
+    <line x1="50" y1="15" x2="50" y2="85" stroke="#5A8770" stroke-width="1.5"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="eyebrow">Évasion Bungalows · Sarraméa, Province Sud</div>
+    <h1>Réservez votre séjour au bord de la rivière</h1>
+    <p>Trois bungalows, une même invitation à ralentir. Remplissez le formulaire ci-dessous et nous revenons vers vous rapidement pour confirmer votre date.</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Votre demande de réservation</h2>
+    <p class="lead">Champs marqués d'un <span class="req">*</span> obligatoires. Cette demande n'est pas une confirmation immédiate — nous vous répondons par email ou téléphone pour valider les disponibilités.</p>
+
+    <form id="booking-form" action="https://formsubmit.co/ajax/bungalow.evasion@gmail.com" method="POST">
+      <!-- Configuration FormSubmit -->
+      <input type="hidden" name="_subject" value="Nouvelle demande de réservation — Évasion Bungalows">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+
+      <fieldset>
+        <legend>Vos coordonnées</legend>
+        <div class="grid two">
+          <div>
+            <label for="prenom">Prénom <span class="req">*</span></label>
+            <input type="text" id="prenom" name="Prénom" required autocomplete="given-name">
+          </div>
+          <div>
+            <label for="nom">Nom <span class="req">*</span></label>
+            <input type="text" id="nom" name="Nom" required autocomplete="family-name">
+          </div>
+        </div>
+        <div class="grid two" style="margin-top:16px;">
+          <div>
+            <label for="tel">Téléphone <span class="req">*</span></label>
+            <input type="tel" id="tel" name="Téléphone" required autocomplete="tel" placeholder="Ex : 89 12 34">
+          </div>
+          <div>
+            <label for="email">Adresse email <span class="req">*</span></label>
+            <input type="email" id="email" name="Email" required autocomplete="email">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Votre séjour</legend>
+        <label for="dates">Dates souhaitées <span class="req">*</span></label>
+        <input type="text" id="dates" name="Dates souhaitées" required placeholder="Ex : du 12 au 15 août 2026">
+      </fieldset>
+
+      <fieldset>
+        <legend>Choix du bungalow <span class="req">*</span></legend>
+        <div class="bungalow-grid">
+
+          <div class="bungalow-option">
+            <input type="radio" id="b-harmonie" name="Bungalow" value="Harmonie" required>
+            <label for="b-harmonie">
+              <svg class="b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12 L12 4 L21 12"/><path d="M5 12 V20 H19 V12"/><path d="M10 20 V14 H14 V20"/></svg>
+              <span class="b-name">Harmonie</span>
+              <span class="b-tag">Le bungalow familial, au calme.</span>
+            </label>
+          </div>
+
+          <div class="bungalow-option">
+            <input type="radio" id="b-antan" name="Bungalow" value="D'Antan Spa" required>
+            <label for="b-antan">
+              <svg class="b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 8 v4 l3 3"/></svg>
+              <span class="b-name">D'Antan Spa</span>
+              <span class="b-tag">Charme d'autrefois, avec spa.</span>
+            </label>
+          </div>
+
+          <div class="bungalow-option">
+            <input type="radio" id="b-tropical" name="Bungalow" value="Tropical Spa" required>
+            <label for="b-tropical">
+              <svg class="b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 C8 6 8 11 12 14 C16 11 16 6 12 3 Z"/><path d="M12 14 V21"/></svg>
+              <span class="b-name">Tropical Spa</span>
+              <span class="b-tag">Ambiance végétale, avec spa.</span>
+            </label>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Commentaire ou question</legend>
+        <label for="commentaire">Besoin particulier (petit-déjeuner, arrivée tardive, allergies...)</label>
+        <textarea id="commentaire" name="Commentaire" placeholder="Facultatif — dites-nous en plus si besoin"></textarea>
+      </fieldset>
+
+      <div class="submit-row">
+        <button type="submit" class="submit" id="submit-btn">Envoyer ma demande</button>
+        <p class="fine-print">Aucun paiement n'est demandé à cette étape. Nous vous recontactons pour confirmer.</p>
+      </div>
+
+      <div id="status-msg" role="status"></div>
+    </form>
+  </div>
+</div>
+
+<footer>Évasion Bungalows — Sarraméa, Province Sud, Nouvelle-Calédonie</footer>
+
+<script>
+  const form = document.getElementById('booking-form');
+  const statusEl = document.getElementById('status-msg');
+  const btn = document.getElementById('submit-btn');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours...';
+    statusEl.className = '';
+    statusEl.style.display = 'none';
+
+    try{
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+
+      if(response.ok){
+        statusEl.className = 'success';
+        statusEl.textContent = 'Merci ! Votre demande a bien été envoyée. Nous revenons vers vous rapidement pour confirmer votre séjour.';
+        form.reset();
+        btn.textContent = 'Envoyer ma demande';
+      } else {
+        throw new Error('Réponse non valide');
+      }
+    } catch(err){
+      statusEl.className = 'error';
+      statusEl.textContent = "Une erreur est survenue lors de l'envoi. Vous pouvez réessayer, ou nous contacter directement par téléphone.";
+      btn.textContent = 'Envoyer ma demande';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
