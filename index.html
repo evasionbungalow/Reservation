@@ -134,7 +134,7 @@
     margin-bottom:6px;
   }
   .req{color:var(--hibiscus); font-weight:600;}
-  input[type="text"], input[type="tel"], input[type="email"], textarea{
+  input[type="text"], input[type="tel"], input[type="email"], input[type="date"], textarea{
     width:100%;
     font-family:'Public Sans', sans-serif;
     font-size:15px;
@@ -289,7 +289,7 @@
   <div class="hero-inner">
     <div class="eyebrow">Évasion Bungalow · Sarraméa, Province Sud</div>
     <h1>Réservez votre séjour au bord de la rivière</h1>
-    <p>Trois bungalows, une même invitation à ralentir. Remplissez le formulaire ci-dessous et nous reviendrons vers vous rapidement pour confirmer votre date.</p>
+    <p>Trois bungalows, une même Evasion. Remplissez le formulaire ci-dessous et nous reviendrons vers vous rapidement pour confirmer votre date.</p>
   </div>
 </div>
 
@@ -330,8 +330,16 @@
 
       <fieldset>
         <legend>Votre séjour</legend>
-        <label for="dates">Dates souhaitées <span class="req">*</span></label>
-        <input type="text" id="dates" name="Dates souhaitées" required placeholder="Ex : du 12 au 15 août 2026">
+        <div class="grid two">
+          <div>
+            <label for="date-arrivee">Date d'arrivée <span class="req">*</span></label>
+            <input type="date" id="date-arrivee" name="Date_arrivee" required>
+          </div>
+          <div>
+            <label for="date-depart">Date de départ <span class="req">*</span></label>
+            <input type="date" id="date-depart" name="Date_depart" required>
+          </div>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -390,6 +398,24 @@
   const form = document.getElementById('booking-form');
   const statusEl = document.getElementById('status-msg');
   const btn = document.getElementById('submit-btn');
+
+  // Empêche la sélection de dates passées et garde la cohérence arrivée/départ
+  const dateArrivee = document.getElementById('date-arrivee');
+  const dateDepart = document.getElementById('date-depart');
+  const todayISO = new Date().toISOString().split('T')[0];
+  dateArrivee.min = todayISO;
+  dateDepart.min = todayISO;
+
+  dateArrivee.addEventListener('change', function(){
+    if(dateArrivee.value){
+      const next = new Date(dateArrivee.value);
+      next.setDate(next.getDate() + 1);
+      dateDepart.min = next.toISOString().split('T')[0];
+      if(dateDepart.value && dateDepart.value <= dateArrivee.value){
+        dateDepart.value = '';
+      }
+    }
+  });
 
   form.addEventListener('submit', async function(e){
     e.preventDefault();
