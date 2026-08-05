@@ -271,6 +271,56 @@
     *{transition:none !important;}
   }
 
+  /* ---------- CONFIRMATION SCREEN ---------- */
+  .confirmation-panel{
+    display:none;
+    text-align:center;
+    padding:12px 0 4px;
+  }
+  .confirmation-icon{
+    width:64px;
+    height:64px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    background:#E9F1EA;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .confirmation-icon svg{
+    width:30px;
+    height:30px;
+    color:var(--river-deep);
+  }
+  .confirmation-panel h2{
+    font-size:22px;
+    color:var(--river-deep);
+    margin-bottom:12px;
+  }
+  .confirmation-panel p{
+    max-width:42ch;
+    margin:0 auto;
+    color:#555;
+    font-size:14.5px;
+    line-height:1.6;
+  }
+  .confirmation-panel .new-request-btn{
+    margin-top:28px;
+    background:transparent;
+    color:var(--river-deep);
+    border:1.5px solid var(--river-mid);
+    font-family:'Public Sans', sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    padding:12px 22px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .confirmation-panel .new-request-btn:hover{
+    background:#EEF3EC;
+  }
+
   /* ---------- LOGO ---------- */
   .hero-header{
     display:flex;
@@ -532,6 +582,15 @@
         <a class="whatsapp-link" href="https://wa.me/687913991" target="_blank" rel="noopener">Écrire sur WhatsApp</a>
       </div>
     </form>
+
+    <div class="confirmation-panel" id="confirmation-panel">
+      <div class="confirmation-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 L9 17 L4 12"/></svg>
+      </div>
+      <h2>Votre demande a bien été envoyée !</h2>
+      <p>Merci pour votre demande. Nous vérifions les disponibilités et revenons vers vous rapidement par email ou téléphone.</p>
+      <button type="button" class="new-request-btn" id="new-request-btn">Faire une nouvelle demande</button>
+    </div>
   </div>
 </div>
 
@@ -541,13 +600,20 @@
   const form = document.getElementById('booking-form');
   const statusEl = document.getElementById('status-msg');
   const btn = document.getElementById('submit-btn');
+  const confirmationPanel = document.getElementById('confirmation-panel');
+  const newRequestBtn = document.getElementById('new-request-btn');
+  let isSubmitting = false; // verrou anti double-clic, en plus de la désactivation du bouton
 
   // Empêche la sélection de dates passées et garde la cohérence arrivée/départ
   const dateArrivee = document.getElementById('date-arrivee');
   const dateDepart = document.getElementById('date-depart');
-  const todayISO = new Date().toISOString().split('T')[0];
-  dateArrivee.min = todayISO;
-  dateDepart.min = todayISO;
+
+  function resetDateLimits(){
+    const todayISO = new Date().toISOString().split('T')[0];
+    dateArrivee.min = todayISO;
+    dateDepart.min = todayISO;
+  }
+  resetDateLimits();
 
   dateArrivee.addEventListener('change', function(){
     if(dateArrivee.value){
@@ -562,6 +628,11 @@
 
   form.addEventListener('submit', async function(e){
     e.preventDefault();
+
+    // Bloque toute soumission supplémentaire tant que la première est en cours
+    if(isSubmitting) return;
+    isSubmitting = true;
+
     btn.disabled = true;
     btn.textContent = 'Envoi en cours...';
     statusEl.className = '';
@@ -575,20 +646,30 @@
       });
 
       if(response.ok){
-        statusEl.className = 'success';
-        statusEl.textContent = 'Merci ! Votre demande a bien été envoyée. Nous vérifions les disponibilités et revenons vers vous rapidement par email ou téléphone.';
         form.reset();
-        btn.textContent = 'Envoyer ma demande';
+        form.style.display = 'none';
+        confirmationPanel.style.display = 'block';
       } else {
         throw new Error('Réponse non valide');
       }
     } catch(err){
       statusEl.className = 'error';
       statusEl.textContent = "Une erreur est survenue lors de l'envoi. Vous pouvez réessayer, ou nous contacter directement par téléphone.";
-      btn.textContent = 'Envoyer ma demande';
     } finally {
       btn.disabled = false;
+      btn.textContent = 'Envoyer ma demande';
+      isSubmitting = false;
     }
+  });
+
+  // Permet de faire une nouvelle demande sans recharger la page
+  newRequestBtn.addEventListener('click', function(){
+    confirmationPanel.style.display = 'none';
+    form.style.display = '';
+    statusEl.className = '';
+    statusEl.style.display = 'none';
+    resetDateLimits();
+    window.scrollTo({ top: form.offsetTop - 24, behavior: 'smooth' });
   });
 </script>
 
